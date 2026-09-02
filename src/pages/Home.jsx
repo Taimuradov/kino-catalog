@@ -20,7 +20,6 @@ function Home({ favorites, setFavorites }) {
     ...movies.slice(0, visibleMovies),
   ]
 
-  // Рассчитываем ширину одного баннера
   useEffect(() => {
     const updateSize = () => {
       if (!viewportRef.current) return
@@ -49,16 +48,14 @@ function Home({ favorites, setFavorites }) {
     }
   }, [])
 
-  // Автоматическая прокрутка каждые 10 секунд
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => prev + 1)
-    }, 10000)
+    }, 7000)
 
     return () => clearInterval(timer)
   }, [])
 
-  // Бесконечная карусель
   useEffect(() => {
     if (!isTransitioning) return
 
@@ -78,14 +75,11 @@ function Home({ favorites, setFavorites }) {
     }
   }, [currentSlide, isTransitioning])
 
-  // Перейти назад
   const previousSlide = () => {
     if (!isTransitioning) return
 
     setCurrentSlide((prev) => prev - 1)
   }
-
-  // Перейти вперед
   const nextSlide = () => {
     if (!isTransitioning) return
 
@@ -96,8 +90,6 @@ function Home({ favorites, setFavorites }) {
 
   return (
     <main className="min-h-screen bg-[#0f1115] text-white">
-
-      {/* Верхняя навигация */}
       <section className="mx-auto max-w-7xl px-6 pt-6">
         <nav className="mx-auto flex w-[calc(100%-104px)] items-center gap-2">
           <button className="flex-1 rounded-lg bg-[#242831] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#2d323c]">
@@ -126,11 +118,9 @@ function Home({ favorites, setFavorites }) {
         </nav>
       </section>
 
-      {/* Карусель */}
       <section className="mx-auto max-w-7xl px-6 pt-3">
         <div className="flex items-center gap-3">
 
-          {/* Левая стрелка */}
           <button
             onClick={previousSlide}
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gray-700 bg-[#181b21] text-gray-300 transition hover:bg-[#242831] hover:text-white"
@@ -139,7 +129,6 @@ function Home({ favorites, setFavorites }) {
             <ChevronLeft size={22} />
           </button>
 
-          {/* Сам блок с баннерами */}
           <div className="min-w-0 flex-1 overflow-hidden rounded-2xl border border-gray-800 bg-[#181b21] p-3">
             <div
               ref={viewportRef}
@@ -177,7 +166,6 @@ function Home({ favorites, setFavorites }) {
             </div>
           </div>
 
-          {/* Правая стрелка */}
           <button
             onClick={nextSlide}
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gray-700 bg-[#181b21] text-gray-300 transition hover:bg-[#242831] hover:text-white"
@@ -189,28 +177,23 @@ function Home({ favorites, setFavorites }) {
         </div>
       </section>
 
-      {/* Пространство между блоками */}
       <div className="h-16" />
 
-      {/* Основная платформа */}
       <section className="mx-auto max-w-7xl px-6 pb-16">
         <div className="mx-auto min-h-[700px] w-[calc(100%-104px)] rounded-2xl border border-gray-800 bg-[#181b21]">
           <div className="flex">
 
-            {/* Левая часть основной платформы */}
             <aside className="w-56 shrink-0 border-r border-gray-800 p-6">
               <div className="text-sm text-gray-500">
                 Здесь будет внутренняя навигация
               </div>
             </aside>
 
-            {/* Основная часть */}
             <div className="flex-1 p-8">
               <h1 className="mb-6 text-3xl font-bold">
                 Фильмы
               </h1>
 
-              {/* Фильтры */}
               <div className="mb-8 rounded-xl border border-gray-800 bg-[#0f1115] p-5">
                 <div className="flex flex-wrap items-center gap-4">
                   <span className="text-sm font-medium text-gray-300">
@@ -235,7 +218,6 @@ function Home({ favorites, setFavorites }) {
                 </div>
               </div>
 
-              {/* Каталог фильмов */}
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 {movies.map((movie) => (
                   <MovieCard
@@ -251,7 +233,6 @@ function Home({ favorites, setFavorites }) {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="border-t border-gray-800 py-8 text-center text-sm text-gray-500">
         КиноКаталог
       </footer>
