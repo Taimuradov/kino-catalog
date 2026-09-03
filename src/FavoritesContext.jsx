@@ -1,9 +1,9 @@
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext, useState } from "react";
 
-const FavoritesContext = createContext(null)
+const FavoritesContext = createContext(null);
 
 export function FavoritesProvider({ children }) {
-  const [favorites, setFavorites] = useState([])
+  const [favorites, setFavorites] = useState([]);
 
   return (
     <FavoritesContext.Provider
@@ -14,17 +14,17 @@ export function FavoritesProvider({ children }) {
     >
       {children}
     </FavoritesContext.Provider>
-  )
+  );
 }
 
 export function useFavorites() {
-  const context = useContext(FavoritesContext)
+  const context = useContext(FavoritesContext);
 
   if (!context) {
     throw new Error(
-      "useFavorites должен использоваться внутри FavoritesProvider"
-    )
+      "useFavorites должен использоваться внутри FavoritesProvider",
+    );
   }
 
-  return context
+  return context;
 }

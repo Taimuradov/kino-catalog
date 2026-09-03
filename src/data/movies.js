@@ -8,10 +8,11 @@ const movies = [
     duration: "2 ч 22 мин",
     premiere: "1994-09-10",
     quality: "BD",
+    director: "Фрэнк Дарабонт",
+    actors: ["Тим Роббинс", "Морган Фриман", "Боб Гантон", "Уильям Сэдлер"],
     description:
       "Банкир Энди Дюфрейн получает два пожизненных срока за преступление, которого он не совершал. Оказавшись в тюрьме Шоушенка, он постепенно завоевывает уважение заключённых и начинает бороться за свободу и надежду...",
-    poster:
-      "https://image.tmdb.org/t/p/w500/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg",
+    poster: "https://image.tmdb.org/t/p/w500/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg",
   },
 
   {
@@ -23,10 +24,16 @@ const movies = [
     duration: "2 ч 49 мин",
     premiere: "2014-10-26",
     quality: "BD",
+    director: "Кристофер Нолан",
+    actors: [
+      "Мэттью Макконахи",
+      "Энн Хэтэуэй",
+      "Джессика Честейн",
+      "Майкл Кейн",
+    ],
     description:
       "Когда Земля становится непригодной для жизни, группа исследователей отправляется через космическую червоточину на поиски новой планеты для человечества. Бывший пилот Купер должен сделать невозможный выбор между семьёй и спасением людей...",
-    poster:
-      "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
+    poster: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
   },
 
   {
@@ -38,10 +45,16 @@ const movies = [
     duration: "2 ч 28 мин",
     premiere: "2010-07-08",
     quality: "BD",
+    director: "Кристофер Нолан",
+    actors: [
+      "Леонардо ДиКаприо",
+      "Джозеф Гордон-Левитт",
+      "Эллиот Пейдж",
+      "Том Харди",
+    ],
     description:
       "Дом Кобб умеет проникать в сны людей и извлекать секреты из их подсознания. Ему предлагают невозможное задание — не украсть идею, а внедрить её в сознание человека. Для выполнения миссии команда должна пройти несколько уровней сна...",
-    poster:
-      "https://image.tmdb.org/t/p/w500/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg",
+    poster: "https://image.tmdb.org/t/p/w500/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg",
   },
 
   {
@@ -53,10 +66,11 @@ const movies = [
     duration: "2 ч 32 мин",
     premiere: "2008-07-14",
     quality: "BD",
+    director: "Кристофер Нолан",
+    actors: ["Кристиан Бэйл", "Хит Леджер", "Аарон Экхарт", "Гэри Олдман"],
     description:
       "Бэтмен продолжает очищать Готэм от преступности при поддержке комиссара Гордона и прокурора Харви Дента. Всё меняется с появлением Джокера — опасного преступника, который стремится превратить город в хаос...",
-    poster:
-      "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+    poster: "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
   },
 
   {
@@ -68,10 +82,11 @@ const movies = [
     duration: "2 ч 22 мин",
     premiere: "1994-06-23",
     quality: "BD",
+    director: "Роберт Земекис",
+    actors: ["Том Хэнкс", "Робин Райт", "Гэри Синиз", "Салли Филд"],
     description:
       "Форрест Гамп никогда не считал себя особенным человеком, однако судьба снова и снова помещает его в центр важнейших событий американской истории. Несмотря на трудности, он остаётся добрым, честным и верным человеком...",
-    poster:
-      "https://image.tmdb.org/t/p/w500/arw2vcBveWOVZr6pxd9XTd1TdQa.jpg",
+    poster: "https://image.tmdb.org/t/p/w500/arw2vcBveWOVZr6pxd9XTd1TdQa.jpg",
   },
 
   {
@@ -83,10 +98,11 @@ const movies = [
     duration: "2 ч 16 мин",
     premiere: "1999-03-24",
     quality: "BD",
+    director: "Лана Вачовски / Лилли Вачовски",
+    actors: ["Киану Ривз", "Лоренс Фишберн", "Кэрри-Энн Мосс", "Хьюго Уивинг"],
     description:
       "Нео живёт обычной жизнью, пока не узнаёт страшную правду о мире вокруг него. Реальность оказывается иллюзией, созданной машинами. Теперь ему предстоит решить, готов ли он принять правду и вступить в борьбу за свободу человечества...",
-    poster:
-      "https://image.tmdb.org/t/p/w500/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg",
+    poster: "https://image.tmdb.org/t/p/w500/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg",
   },
 
   {
@@ -98,10 +114,11 @@ const movies = [
     duration: "2 ч 58 мин",
     premiere: "2001-12-10",
     quality: "BD",
+    director: "Питер Джексон",
+    actors: ["Элайджа Вуд", "Иэн Маккеллен", "Вигго Мортенсен", "Орландо Блум"],
     description:
       "Хоббит Фродо получает могущественное Кольцо Всевластия. Чтобы уничтожить его, он отправляется в опасное путешествие к Роковой горе. Вместе с ним путь проходит Братство, состоящее из представителей разных народов Средиземья...",
-    poster:
-      "https://image.tmdb.org/t/p/w500/6oom5QYQ2yQTMJIbnvbkblc3x3Y.jpg",
+    poster: "https://image.tmdb.org/t/p/w500/6oom5QYQ2yQTMJIbnvbkblc3x3Y.jpg",
   },
 
   {
@@ -113,10 +130,11 @@ const movies = [
     duration: "2 ч 59 мин",
     premiere: "2002-12-05",
     quality: "BD",
+    director: "Питер Джексон",
+    actors: ["Элайджа Вуд", "Вигго Мортенсен", "Иэн Маккеллен", "Шон Эстин"],
     description:
       "Братство распалось, а его участники продолжают путь разными дорогами. Фродо и Сэм встречают загадочного Голлума, пока остальные герои пытаются остановить надвигающуюся войну и защитить жителей Средиземья...",
-    poster:
-      "https://image.tmdb.org/t/p/w500/5VTN0pR8gcqV3EPUHHfMGnJYNJ.jpg",
+    poster: "https://image.tmdb.org/t/p/w500/5VTN0pR8gcqV3EPUHHfMGnJYNJ.jpg",
   },
 
   {
@@ -128,10 +146,11 @@ const movies = [
     duration: "3 ч 21 мин",
     premiere: "2003-12-01",
     quality: "BD",
+    director: "Питер Джексон",
+    actors: ["Элайджа Вуд", "Вигго Мортенсен", "Иэн Маккеллен", "Шон Эстин"],
     description:
       "Последняя часть великой истории о Средиземье. Пока армии Саурона готовятся к решающей битве, Фродо и Сэм приближаются к Роковой горе. Судьба всех свободных народов теперь зависит от их последней миссии...",
-    poster:
-      "https://image.tmdb.org/t/p/w500/rCzpDGLbOoPwLjy3OAm5NUPOTrC.jpg",
+    poster: "https://image.tmdb.org/t/p/w500/rCzpDGLbOoPwLjy3OAm5NUPOTrC.jpg",
   },
 
   {
@@ -143,10 +162,11 @@ const movies = [
     duration: "2 ч 35 мин",
     premiere: "2000-05-01",
     quality: "BD",
+    director: "Ридли Скотт",
+    actors: ["Рассел Кроу", "Хоакин Феникс", "Конни Нильсен", "Оливер Рид"],
     description:
       "Римский полководец Максимус становится жертвой политического заговора и теряет всё, что было ему дорого. Проданный в рабство, он становится гладиатором и получает шанс встретиться со своим врагом на арене...",
-    poster:
-      "https://image.tmdb.org/t/p/w500/ty8TGRuvJLPUmAR1H1nRIsgwvim.jpg",
+    poster: "https://image.tmdb.org/t/p/w500/ty8TGRuvJLPUmAR1H1nRIsgwvim.jpg",
   },
 
   {
@@ -158,10 +178,11 @@ const movies = [
     duration: "2 ч 02 мин",
     premiere: "2019-08-31",
     quality: "BD",
+    director: "Тодд Филлипс",
+    actors: ["Хоакин Феникс", "Роберт Де Ниро", "Зази Битц", "Фрэнсис Конрой"],
     description:
       "Артур Флек живёт в мрачном Готэме и мечтает стать стендап-комиком. Постепенно одиночество, унижения и жестокость окружающего мира превращают его жизнь в историю, которая приведёт к появлению Джокера...",
-    poster:
-      "https://image.tmdb.org/t/p/w500/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg",
+    poster: "https://image.tmdb.org/t/p/w500/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg",
   },
 
   {
@@ -173,10 +194,16 @@ const movies = [
     duration: "2 ч 18 мин",
     premiere: "2010-02-13",
     quality: "BD",
+    director: "Мартин Скорсезе",
+    actors: [
+      "Леонардо ДиКаприо",
+      "Марк Руффало",
+      "Бен Кингсли",
+      "Мишель Уильямс",
+    ],
     description:
       "Федеральный маршал прибывает на изолированный остров, где находится психиатрическая лечебница для опасных преступников. Расследование исчезновения пациентки постепенно превращается в путешествие в собственное сознание...",
-    poster:
-      "https://image.tmdb.org/t/p/w500/4GDy0PH7M7X8x9V3E6b3r8E5Y7.jpg",
+    poster: "https://image.tmdb.org/t/p/w500/4GDy0PH7M7X8x9V3E6b3r8E5Y7.jpg",
   },
 
   {
@@ -188,10 +215,11 @@ const movies = [
     duration: "3 ч 09 мин",
     premiere: "1999-12-06",
     quality: "BD",
+    director: "Фрэнк Дарабонт",
+    actors: ["Том Хэнкс", "Майкл Кларк Дункан", "Дэвид Морс", "Бонни Хант"],
     description:
       "Работник тюрьмы Пол Эджкомб привык видеть человеческую жестокость и смерть. Но появление нового заключённого Джона Коффи заставляет его усомниться в собственных представлениях о добре, зле и справедливости...",
-    poster:
-      "https://image.tmdb.org/t/p/w500/velWPhVMQeQKcxggNEpQFjQJd7Y.jpg",
+    poster: "https://image.tmdb.org/t/p/w500/velWPhVMQeQKcxggNEpQFjQJd7Y.jpg",
   },
 
   {
@@ -203,10 +231,11 @@ const movies = [
     duration: "2 ч 55 мин",
     premiere: "1972-03-14",
     quality: "BD",
+    director: "Фрэнсис Форд Коппола",
+    actors: ["Марлон Брандо", "Аль Пачино", "Джеймс Каан", "Роберт Дюваль"],
     description:
       "Глава могущественной мафиозной семьи Дон Вито Корлеоне постепенно передаёт управление своему сыну Майклу. Молодой человек сначала стремится держаться подальше от криминального мира, но события заставляют его изменить свою жизнь...",
-    poster:
-      "https://image.tmdb.org/t/p/w500/3bhkrj58Vtu7enYsRolD1fZdja1.jpg",
+    poster: "https://image.tmdb.org/t/p/w500/3bhkrj58Vtu7enYsRolD1fZdja1.jpg",
   },
 
   {
@@ -218,10 +247,11 @@ const movies = [
     duration: "2 ч 23 мин",
     premiere: "2003-07-09",
     quality: "BD",
+    director: "Гор Вербински",
+    actors: ["Джонни Депп", "Орландо Блум", "Кира Найтли", "Джеффри Раш"],
     description:
       "Капитан Джек Воробей возвращается в Порт-Ройал, где узнаёт о похищении Элизабет. Вместе с кузнецом Уиллом Тёрнером он отправляется в погоню за пиратами и сталкивается с проклятым экипажем капитана Барбоссы...",
-    poster:
-      "https://image.tmdb.org/t/p/w500/z8onk7LV9Mmw6zKz4hT6pzzvmvl.jpg",
+    poster: "https://image.tmdb.org/t/p/w500/z8onk7LV9Mmw6zKz4hT6pzzvmvl.jpg",
   },
 
   {
@@ -233,10 +263,16 @@ const movies = [
     duration: "1 ч 28 мин",
     premiere: "1994-06-15",
     quality: "BD",
+    director: "Роджер Аллерс / Роб Минкофф",
+    actors: [
+      "Мэттью Бродерик",
+      "Джереми Айронс",
+      "Джеймс Эрл Джонс",
+      "Мойра Келли",
+    ],
     description:
       "Молодой лев Симба должен стать наследником своего отца Муфасы. Но коварный дядя Шрам устраивает заговор, из-за которого Симба вынужден покинуть родные земли. Повзрослев, он возвращается, чтобы вернуть себе место короля...",
-    poster:
-      "https://image.tmdb.org/t/p/w500/2rH3bLk3K8f9z8W8H3z8x0KQx4L.jpg",
+    poster: "https://image.tmdb.org/t/p/w500/2rH3bLk3K8f9z8W8H3z8x0KQx4L.jpg",
   },
 
   {
@@ -248,10 +284,11 @@ const movies = [
     duration: "1 ч 38 мин",
     premiere: "2008-06-23",
     quality: "BD",
+    director: "Эндрю Стэнтон",
+    actors: ["Бен Бёрт", "Элисса Найт", "Джефф Гарлин", "Сигурни Уивер"],
     description:
       "Одинокий робот ВАЛЛ·И долгие годы очищает Землю от мусора, оставленного человечеством. Всё меняется после встречи с роботом Евой. Вместе они становятся частью невероятного путешествия, способного изменить судьбу людей...",
-    poster:
-      "https://image.tmdb.org/t/p/w500/hbhFnRzzg6ZDmm8YAmxBnQpQIPh.jpg",
+    poster: "https://image.tmdb.org/t/p/w500/hbhFnRzzg6ZDmm8YAmxBnQpQIPh.jpg",
   },
 
   {
@@ -263,10 +300,16 @@ const movies = [
     duration: "1 ч 36 мин",
     premiere: "2009-05-13",
     quality: "BD",
+    director: "Пит Доктер",
+    actors: [
+      "Эдвард Аснер",
+      "Кристофер Пламмер",
+      "Джордан Нагай",
+      "Боб Питерсон",
+    ],
     description:
       "Пожилой Карл Фредриксен решает исполнить мечту своей покойной жены и отправляется в путешествие к Южной Америке. Неожиданно в его доме оказывается юный скаут Рассел, и вместе они попадают в невероятные приключения...",
-    poster:
-      "https://image.tmdb.org/t/p/w500/mFvoEwSfLqbcWwC6zD7QZx4J8wB.jpg",
+    poster: "https://image.tmdb.org/t/p/w500/mFvoEwSfLqbcWwC6zD7QZx4J8wB.jpg",
   },
 
   {
@@ -278,10 +321,16 @@ const movies = [
     duration: "1 ч 38 мин",
     premiere: "2010-03-18",
     quality: "BD",
+    director: "Крис Сандерс / Дин ДеБлуа",
+    actors: [
+      "Джей Барушель",
+      "Джерард Батлер",
+      "Америка Феррера",
+      "Крейг Фергюсон",
+    ],
     description:
       "Юный викинг Иккинг должен доказать, что способен стать настоящим воином. Но после встречи с раненым драконом Беззубиком он понимает, что многолетняя вражда между людьми и драконами может быть основана на страхе и непонимании...",
-    poster:
-      "https://image.tmdb.org/t/p/w500/ygGmAO60t8GyqLGS9QqQ9y8v0Vt.jpg",
+    poster: "https://image.tmdb.org/t/p/w500/ygGmAO60t8GyqLGS9QqQ9y8v0Vt.jpg",
   },
 
   {
@@ -293,10 +342,11 @@ const movies = [
     duration: "1 ч 21 мин",
     premiere: "1995-11-19",
     quality: "BD",
+    director: "Джон Лассетер",
+    actors: ["Том Хэнкс", "Тим Аллен", "Дон Риклз", "Энни Поттс"],
     description:
       "Игрушки оживают, когда людей нет рядом. Вуди привык быть любимой игрушкой Энди, но появление нового космического героя Базза Лайтера меняет привычный порядок. Теперь двум соперникам предстоит стать настоящими друзьями...",
-    poster:
-      "https://image.tmdb.org/t/p/w500/uXDfjJbdP4ijW5hWSBrPrlKpxab.jpg",
+    poster: "https://image.tmdb.org/t/p/w500/uXDfjJbdP4ijW5hWSBrPrlKpxab.jpg",
   },
 
   {
@@ -308,10 +358,11 @@ const movies = [
     duration: "1 ч 35 мин",
     premiere: "2015-05-18",
     quality: "BD",
+    director: "Пит Доктер",
+    actors: ["Эми Полер", "Филлис Смит", "Билл Хейдер", "Минди Калинг"],
     description:
       "После переезда в новый город жизнь девочки Райли резко меняется. Внутри её сознания живут Радость, Печаль, Страх, Гнев и Отвращение. Когда Радость и Печаль случайно оказываются далеко от центра управления, начинается необычное путешествие...",
-    poster:
-      "https://image.tmdb.org/t/p/w500/2H1TmgdfNtsKlU8x1m3Wf4zZ3v.jpg",
+    poster: "https://image.tmdb.org/t/p/w500/2H1TmgdfNtsKlU8x1m3Wf4zZ3v.jpg",
   },
 
   {
@@ -323,10 +374,16 @@ const movies = [
     duration: "1 ч 57 мин",
     premiere: "2018-12-12",
     quality: "BD",
+    director: "Боб Персичетти / Питер Рэмзи / Родни Ротман",
+    actors: [
+      "Шеймейк Мур",
+      "Джейк Джонсон",
+      "Хейли Стайнфелд",
+      "Махершала Али",
+    ],
     description:
       "Подросток Майлз Моралес неожиданно получает способности Человека-паука. После столкновения нескольких вселенных он встречает других людей-пауков и узнаёт, что стать настоящим героем может каждый...",
-    poster:
-      "https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg",
+    poster: "https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg",
   },
 
   {
@@ -338,10 +395,16 @@ const movies = [
     duration: "1 ч 45 мин",
     premiere: "2017-10-20",
     quality: "BD",
+    director: "Ли Анкрич",
+    actors: [
+      "Энтони Гонсалес",
+      "Гаэль Гарсия Берналь",
+      "Бенджамин Братт",
+      "Алайна Убах",
+    ],
     description:
       "Мигель мечтает стать музыкантом, несмотря на запрет своей семьи. В День мёртвых он случайно попадает в мир духов, где начинает раскрывать тайны истории своей семьи и узнаёт, что музыка может связывать поколения...",
-    poster:
-      "https://image.tmdb.org/t/p/w500/gGEsBPAijhVUFoiNpgZXqRVWJt2.jpg",
+    poster: "https://image.tmdb.org/t/p/w500/gGEsBPAijhVUFoiNpgZXqRVWJt2.jpg",
   },
 
   {
@@ -353,10 +416,11 @@ const movies = [
     duration: "1 ч 51 мин",
     premiere: "2007-06-22",
     quality: "BD",
+    director: "Брэд Бёрд",
+    actors: ["Паттон Освальт", "Иэн Холм", "Лу Романо", "Питер О'Тул"],
     description:
       "Крысёнок Реми мечтает стать великим шеф-поваром. Судьба приводит его на кухню престижного парижского ресторана, где он объединяется с неопытным юношей Лингвини и тайно помогает ему готовить настоящие кулинарные шедевры...",
-    poster:
-      "https://image.tmdb.org/t/p/w500/npAlQe9K2y6M0v5xZ4h1Qp9w3.jpg",
+    poster: "https://image.tmdb.org/t/p/w500/npAlQe9K2y6M0v5xZ4h1Qp9w3.jpg",
   },
 
   {
@@ -368,11 +432,17 @@ const movies = [
     duration: "1 ч 48 мин",
     premiere: "2016-02-11",
     quality: "BD",
+    director: "Байрон Ховард / Рич Мур",
+    actors: [
+      "Джиннифер Гудвин",
+      "Джейсон Бейтман",
+      "Идрис Эльба",
+      "Дженни Слейт",
+    ],
     description:
       "В огромном городе Зверополисе хищники и травоядные живут бок о бок. Молодая крольчиха Джуди Хопс становится полицейским и получает первое серьёзное дело. Чтобы раскрыть загадочное исчезновение жителей, ей приходится объединиться с хитрым лисом Ником...",
-    poster:
-      "https://image.tmdb.org/t/p/w500/hlK0x1f3k3x6k2n9q7x5m4w8.jpg",
+    poster: "https://image.tmdb.org/t/p/w500/hlK0x1f3k3x6k2n9q7x5m4w8.jpg",
   },
-]
+];
 
-export default movies
+export default movies;
