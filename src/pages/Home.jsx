@@ -1,16 +1,18 @@
 import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 
 import movies from "../data/movies";
 import MovieCard from "../components/MovieCard";
+import MovieCarousel from "../components/MovieCarousel";
+import Pagination from "../components/Pagination";
+
+import backgroundImage from "../assets/site-background.jpg";
 
 function Home({ favorites, setFavorites }) {
-  const visibleMovies = 6;
-  const gap = 12;
   const moviesPerPage = 10;
 
   const [searchParams] = useSearchParams();
+  const location = useLocation();
 
   const searchQuery = searchParams.get("search")?.trim().toLowerCase() || "";
 
@@ -27,7 +29,9 @@ function Home({ favorites, setFavorites }) {
       ? movie.actors.join(" ").toLowerCase()
       : movie.actors?.toLowerCase() || "";
 
-    const genre = movie.genre?.toLowerCase() || "";
+    const genre = Array.isArray(movie.genre)
+      ? movie.genre.join(" ").toLowerCase()
+      : movie.genre?.toLowerCase() || "";
 
     return (
       title.includes(searchQuery) ||
@@ -48,313 +52,316 @@ function Home({ favorites, setFavorites }) {
     startIndex + moviesPerPage,
   );
 
-  const previousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage((prev) => prev - 1);
-    }
-  };
+  const catalogBlockRef = useRef(null);
 
-  const nextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage((prev) => prev + 1);
-    }
-  };
+  const shouldScrollToCatalogRef = useRef(false);
 
-  const goToPage = (page) => {
-    setCurrentPage(page);
-  };
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
-  const viewportRef = useRef(null);
-
-  const [currentSlide, setCurrentSlide] = useState(visibleMovies);
-
-  const [cardWidth, setCardWidth] = useState(0);
-
-  const [isTransitioning, setIsTransitioning] = useState(true);
-
-  const sliderMovies = [
-    ...movies.slice(-visibleMovies),
-    ...movies,
-    ...movies.slice(0, visibleMovies),
-  ];
 
   useEffect(() => {
-    const updateSize = () => {
-      if (!viewportRef.current) return;
+    if (totalPages > 0 && currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
-      const width = viewportRef.current.clientWidth;
-
-      const calculatedCardWidth =
-        (width - gap * (visibleMovies - 1)) / visibleMovies;
-
-      setCardWidth(calculatedCardWidth);
-    };
-
-    updateSize();
-
-    const resizeObserver = new ResizeObserver(updateSize);
-
-    if (viewportRef.current) {
-      resizeObserver.observe(viewportRef.current);
+  useEffect(() => {
+    if (shouldScrollToCatalogRef.current) {
+      return;
     }
 
-    window.addEventListener("resize", updateSize);
-
-    return () => {
-      resizeObserver.disconnect();
-
-      window.removeEventListener("resize", updateSize);
-    };
-  }, []);
+    window.scrollTo({
+      top: 0,
+      behavior: "auto",
+    });
+  }, [location.pathname]);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => prev + 1);
-    }, 7000);
-
-    return () => clearInterval(timer);
-  }, []);
-  useEffect(() => {
-    if (!isTransitioning) return;
-
-    if (currentSlide === movies.length + visibleMovies) {
-      const timer = setTimeout(() => {
-        setIsTransitioning(false);
-        setCurrentSlide(visibleMovies);
-
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            setIsTransitioning(true);
-          });
-        });
-      }, 700);
-
-      return () => clearTimeout(timer);
+    if (!shouldScrollToCatalogRef.current) {
+      return;
     }
-  }, [currentSlide, isTransitioning]);
 
-  const previousSlide = () => {
-    if (!isTransitioning) return;
+    shouldScrollToCatalogRef.current = false;
 
-    setCurrentSlide((prev) => prev - 1);
+    if (!catalogBlockRef.current) {
+      return;
+    }
+
+    requestAnimationFrame(() => {
+      const catalogTop =
+        catalogBlockRef.current.getBoundingClientRect().top + window.scrollY;
+
+      const header = document.querySelector("header");
+
+      const headerHeight = header ? header.getBoundingClientRect().height : 0;
+
+      const gap = 8;
+
+      const targetPosition = catalogTop - headerHeight - gap;
+
+      window.scrollTo({
+        top: Math.max(targetPosition, 0),
+        behavior: "smooth",
+      });
+    });
+  }, [currentPage]);
+
+  const previousPage = () => {
+    if (currentPage === 1) {
+      return;
+    }
+
+    shouldScrollToCatalogRef.current = true;
+
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
   };
-  const nextSlide = () => {
-    if (!isTransitioning) return;
 
-    setCurrentSlide((prev) => prev + 1);
+  const nextPage = () => {
+    if (currentPage === totalPages) {
+      return;
+    }
+
+    shouldScrollToCatalogRef.current = true;
+
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   };
 
-  const slideDistance = cardWidth + gap;
+  const goToPage = (page) => {
+    if (page < 1 || page > totalPages) {
+      return;
+    }
+
+    if (page === currentPage) {
+      return;
+    }
+
+    shouldScrollToCatalogRef.current = true;
+
+    setCurrentPage(page);
+  };
 
   return (
-    <main className="min-h-screen bg-[#0f1115] text-white">
-      <section className="mx-auto max-w-7xl px-6 pt-6">
-        <nav className="mx-auto flex w-[calc(100%-104px)] gap-2 overflow-x-auto">
-          <button className="min-w-[110px] flex-1 rounded-lg bg-[#242831] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#2d323c]">
-            Главная
-          </button>
+    <main className="relative min-h-screen overflow-x-hidden bg-[#0f1115] text-white">
+      <div
+        className="pointer-events-none fixed inset-x-0 top-0 z-0 h-[85vh] bg-cover bg-top bg-no-repeat"
+        style={{
+          backgroundImage: `
+            linear-gradient(
+              to bottom,
+              rgba(15, 17, 21, 0) 0%,
+              rgba(15, 17, 21, 0.02) 20%,
+              rgba(15, 17, 21, 0.06) 40%,
+              rgba(15, 17, 21, 0.15) 55%,
+              rgba(15, 17, 21, 0.35) 70%,
+              rgba(15, 17, 21, 0.65) 82%,
+              rgba(15, 17, 21, 0.88) 92%,
+              #0f1115 100%
+            ),
+            url(${backgroundImage})
+          `,
+        }}
+      />
 
-          <button className="min-w-[110px] flex-1 rounded-lg px-4 py-2.5 text-sm font-medium text-gray-400 transition hover:bg-[#242831] hover:text-white">
-            Новинки
-          </button>
+      <div className="relative z-10">
+        <section className="mx-auto max-w-7xl px-3 pt-3 sm:px-6 sm:pt-6">
+          <nav className="mx-auto flex w-full gap-2 overflow-x-auto pb-1 sm:w-[calc(100%-104px)]">
+            <Link
+              to="/"
+              className={`flex min-w-[90px] flex-1 shrink-0 items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium transition sm:min-w-[110px] sm:px-4 ${
+                location.pathname === "/"
+                  ? "bg-[#242831]/90 text-white"
+                  : "bg-[#181b21]/95 text-gray-400 hover:bg-[#242831] hover:text-white"
+              }`}
+            >
+              Главная
+            </Link>
 
-          <button className="min-w-[110px] flex-1 rounded-lg px-4 py-2.5 text-sm font-medium text-gray-400 transition hover:bg-[#242831] hover:text-white">
-            Подборки
-          </button>
+            <Link
+              to="/new"
+              className={`flex min-w-[90px] flex-1 shrink-0 items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium transition sm:min-w-[110px] sm:px-4 ${
+                location.pathname === "/new"
+                  ? "bg-[#242831]/90 text-white"
+                  : "bg-[#181b21]/95 text-gray-400 hover:bg-[#242831] hover:text-white"
+              }`}
+            >
+              Новинки
+            </Link>
 
-          <button className="min-w-[110px] flex-1 rounded-lg px-4 py-2.5 text-sm font-medium text-gray-400 transition hover:bg-[#242831] hover:text-white">
-            Фильмы
-          </button>
+            <Link
+              to="/collections"
+              className={`flex min-w-[100px] flex-1 shrink-0 items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium transition sm:min-w-[110px] sm:px-4 ${
+                location.pathname === "/collections"
+                  ? "bg-[#242831]/90 text-white"
+                  : "bg-[#181b21]/95 text-gray-400 hover:bg-[#242831] hover:text-white"
+              }`}
+            >
+              Подборки
+            </Link>
 
-          <button className="min-w-[110px] flex-1 rounded-lg px-4 py-2.5 text-sm font-medium text-gray-400 transition hover:bg-[#242831] hover:text-white">
-            Сериалы
-          </button>
+            <Link
+              to="/movies"
+              className={`flex min-w-[90px] flex-1 shrink-0 items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium transition sm:min-w-[110px] sm:px-4 ${
+                location.pathname === "/movies"
+                  ? "bg-[#242831]/90 text-white"
+                  : "bg-[#181b21]/95 text-gray-400 hover:bg-[#242831] hover:text-white"
+              }`}
+            >
+              Фильмы
+            </Link>
 
-          <button className="min-w-[130px] flex-1 rounded-lg px-4 py-2.5 text-sm font-medium text-gray-400 transition hover:bg-[#242831] hover:text-white">
-            Мультфильмы
-          </button>
+            <Link
+              to="/series"
+              className={`flex min-w-[90px] flex-1 shrink-0 items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium transition sm:min-w-[110px] sm:px-4 ${
+                location.pathname === "/series"
+                  ? "bg-[#242831]/90 text-white"
+                  : "bg-[#181b21]/95 text-gray-400 hover:bg-[#242831] hover:text-white"
+              }`}
+            >
+              Сериалы
+            </Link>
 
-          <Link
-            to="/favorites"
-            className="flex min-w-[110px] flex-1 items-center justify-center rounded-lg px-4 py-2.5 text-sm font-medium text-gray-400 transition hover:bg-[#242831] hover:text-white"
+            <Link
+              to="/cartoons"
+              className={`flex min-w-[110px] flex-1 shrink-0 items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium transition sm:min-w-[130px] sm:px-4 ${
+                location.pathname === "/cartoons"
+                  ? "bg-[#242831]/90 text-white"
+                  : "bg-[#181b21]/95 text-gray-400 hover:bg-[#242831] hover:text-white"
+              }`}
+            >
+              Мультфильмы
+            </Link>
+
+            <Link
+              to="/favorites"
+              className={`flex min-w-[100px] flex-1 shrink-0 items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium transition sm:min-w-[110px] sm:px-4 ${
+                location.pathname === "/favorites"
+                  ? "bg-[#242831]/90 text-white"
+                  : "bg-[#181b21]/95 text-gray-400 hover:bg-[#242831] hover:text-white"
+              }`}
+            >
+              Избранное
+            </Link>
+          </nav>
+        </section>
+
+        <MovieCarousel />
+
+        <div className="h-8 sm:h-16" />
+
+        <section className="mx-auto max-w-7xl px-3 pb-8 sm:px-6 sm:pb-16">
+          <div
+            ref={catalogBlockRef}
+            className="mx-auto min-h-[700px] w-full overflow-hidden rounded-xl border border-gray-800 bg-[#181b21]/95 backdrop-blur-sm sm:w-[calc(100%-104px)] sm:rounded-2xl"
           >
-            Избранное
-          </Link>
-        </nav>
-      </section>
-      <section className="mx-auto max-w-7xl px-6 pt-3">
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={previousSlide}
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gray-700 bg-[#181b21] text-gray-300 transition hover:bg-[#242831] hover:text-white"
-            aria-label="Предыдущий баннер"
-          >
-            <ChevronLeft size={22} />
-          </button>
-
-          <div className="min-w-0 flex-1 overflow-hidden rounded-2xl border border-gray-800 bg-[#181b21] p-3">
-            <div ref={viewportRef} className="overflow-hidden">
-              <div
-                className={`flex gap-3 ${
-                  isTransitioning
-                    ? "transition-transform duration-700 ease-in-out"
-                    : ""
-                }`}
-                style={{
-                  transform: `translateX(-${currentSlide * slideDistance}px)`,
-                }}
-              >
-                {sliderMovies.map((movie, index) => (
-                  <Link
-                    key={`${movie.id}-${index}`}
-                    to={`/movie/${movie.id}`}
-                    className="group block shrink-0"
-                    style={{
-                      width: `${cardWidth}px`,
-                    }}
-                  >
-                    <div className="h-64 overflow-hidden rounded-xl bg-[#242831]">
-                      <img
-                        src={movie.poster}
-                        alt={movie.title}
-                        className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-                      />
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={nextSlide}
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gray-700 bg-[#181b21] text-gray-300 transition hover:bg-[#242831] hover:text-white"
-            aria-label="Следующий баннер"
-          >
-            <ChevronRight size={22} />
-          </button>
-        </div>
-      </section>
-
-      <div className="h-16" />
-
-      <section className="mx-auto max-w-7xl px-6 pb-16">
-        <div className="mx-auto min-h-[700px] w-[calc(100%-104px)] rounded-2xl border border-gray-800 bg-[#181b21]">
-          <div className="flex min-h-[700px]">
-            <aside className="hidden w-56 shrink-0 border-r border-gray-800 p-6 md:block">
-              <div className="text-sm text-gray-500">
-                Здесь будет внутренняя навигация
-              </div>
-            </aside>
-            <div className="min-w-0 flex-1 p-5 sm:p-6 lg:p-8">
-              <h1 className="mb-6 text-2xl font-bold sm:text-3xl">
-                {searchQuery ? "Результаты поиска" : "Фильмы"}
-              </h1>
-
-              {searchQuery && (
-                <p className="mb-6 text-sm text-gray-500">
-                  Поиск:
-                  <span className="ml-2 text-gray-300">«{searchQuery}»</span>
-                </p>
-              )}
-
-              <div className="mb-8 rounded-xl border border-gray-800 bg-[#0f1115] p-4 sm:p-5">
-                <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-                  <span className="text-sm font-medium text-gray-300">
-                    Сортировка:
-                  </span>
-
-                  <button className="rounded-lg border border-gray-700 bg-[#181b21] px-4 py-2 text-sm text-gray-300 transition hover:border-gray-500 hover:bg-[#242831] hover:text-white">
-                    Новые ▼
-                  </button>
-
-                  <button className="rounded-lg border border-gray-700 bg-[#181b21] px-4 py-2 text-sm text-gray-300 transition hover:border-gray-500 hover:bg-[#242831] hover:text-white">
-                    Год ▼
-                  </button>
-
-                  <button className="rounded-lg border border-gray-700 bg-[#181b21] px-4 py-2 text-sm text-gray-300 transition hover:border-gray-500 hover:bg-[#242831] hover:text-white">
-                    Жанр ▼
-                  </button>
-
-                  <button className="rounded-lg border border-gray-700 bg-[#181b21] px-4 py-2 text-sm text-gray-300 transition hover:border-gray-500 hover:bg-[#242831] hover:text-white">
-                    Страна ▼
-                  </button>
+            <div className="flex min-h-[700px]">
+              <aside className="hidden w-56 shrink-0 border-r border-gray-800 p-6 md:block">
+                <div className="text-sm text-gray-500">
+                  Здесь будет внутренняя навигация
                 </div>
-              </div>
-              {currentMovies.length === 0 ? (
-                <div className="rounded-xl border border-gray-800 bg-[#0f1115] p-10 text-center">
-                  <h2 className="text-xl font-semibold">Ничего не найдено</h2>
+              </aside>
 
-                  <p className="mt-2 text-sm text-gray-500">
-                    Попробуйте изменить запрос.
+              <div className="min-w-0 flex-1 p-4 sm:p-6 lg:p-8">
+                <h1 className="mb-5 text-2xl font-bold sm:mb-6 sm:text-3xl">
+                  {searchQuery ? "Результаты поиска" : "Фильмы"}
+                </h1>
+
+                {searchQuery && (
+                  <p className="mb-5 break-words text-sm text-gray-500 sm:mb-6">
+                    Поиск:
+                    <span className="ml-2 text-gray-300">«{searchQuery}»</span>
                   </p>
-                </div>
-              ) : (
-                <>
-                  <div className="flex flex-col gap-5">
-                    {currentMovies.map((movie) => (
-                      <MovieCard
-                        key={movie.id}
-                        movie={movie}
-                        favorites={favorites}
-                        setFavorites={setFavorites}
-                      />
-                    ))}
+                )}
+
+                <div className="mb-6 rounded-xl border border-gray-800 bg-[#0f1115]/90 p-3 backdrop-blur-sm sm:mb-8 sm:p-5">
+                  <div className="flex flex-wrap items-center gap-2.5 sm:gap-4">
+                    <span className="w-full text-sm font-medium text-gray-300 sm:w-auto">
+                      Сортировка:
+                    </span>
+
+                    <button
+                      type="button"
+                      className="rounded-lg border border-gray-700 bg-[#181b21]/90 px-3 py-2 text-sm text-gray-300 transition hover:border-gray-500 hover:bg-[#242831] hover:text-white sm:px-4"
+                    >
+                      Новые ▼
+                    </button>
+
+                    <button
+                      type="button"
+                      className="rounded-lg border border-gray-700 bg-[#181b21]/90 px-3 py-2 text-sm text-gray-300 transition hover:border-gray-500 hover:bg-[#242831] hover:text-white sm:px-4"
+                    >
+                      Год ▼
+                    </button>
+
+                    <button
+                      type="button"
+                      className="rounded-lg border border-gray-700 bg-[#181b21]/90 px-3 py-2 text-sm text-gray-300 transition hover:border-gray-500 hover:bg-[#242831] hover:text-white sm:px-4"
+                    >
+                      Жанр ▼
+                    </button>
+
+                    <button
+                      type="button"
+                      className="rounded-lg border border-gray-700 bg-[#181b21]/90 px-3 py-2 text-sm text-gray-300 transition hover:border-gray-500 hover:bg-[#242831] hover:text-white sm:px-4"
+                    >
+                      Страна ▼
+                    </button>
                   </div>
+                </div>
 
-                  {totalPages > 1 && (
-                    <div className="mt-10 flex flex-wrap items-center justify-center gap-2">
-                      <button
-                        type="button"
-                        onClick={previousPage}
-                        disabled={currentPage === 1}
-                        className="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-700 bg-[#181b21] text-gray-300 transition hover:bg-[#242831] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
-                        aria-label="Предыдущая страница"
-                      >
-                        <ChevronLeft size={20} />
-                      </button>
+                {currentMovies.length > 0 && totalPages > 1 && (
+                  <div className="mb-6 sm:mb-8">
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      onPrevious={previousPage}
+                      onNext={nextPage}
+                      onPageChange={goToPage}
+                      showOnTop
+                      cardsCount={currentMovies.length}
+                    />
+                  </div>
+                )}
 
-                      {Array.from(
-                        {
-                          length: totalPages,
-                        },
-                        (_, index) => index + 1,
-                      ).map((page) => (
-                        <button
-                          key={page}
-                          type="button"
-                          onClick={() => goToPage(page)}
-                          className={`flex h-10 min-w-10 items-center justify-center rounded-lg px-3 text-sm font-medium transition ${
-                            currentPage === page
-                              ? "bg-[#242831] text-white"
-                              : "border border-gray-700 bg-[#181b21] text-gray-400 hover:bg-[#242831] hover:text-white"
-                          }`}
-                        >
-                          {page}
-                        </button>
+                {currentMovies.length === 0 ? (
+                  <div className="rounded-xl border border-gray-800 bg-[#0f1115]/90 p-8 text-center sm:p-10">
+                    <h2 className="text-xl font-semibold">Ничего не найдено</h2>
+
+                    <p className="mt-2 text-sm text-gray-500">
+                      Попробуйте изменить запрос.
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex flex-col gap-4 sm:gap-5">
+                      {currentMovies.map((movie) => (
+                        <MovieCard
+                          key={movie.id}
+                          movie={movie}
+                          favorites={favorites}
+                          setFavorites={setFavorites}
+                        />
                       ))}
-
-                      <button
-                        type="button"
-                        onClick={nextPage}
-                        disabled={currentPage === totalPages}
-                        className="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-700 bg-[#181b21] text-gray-300 transition hover:bg-[#242831] hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
-                        aria-label="Следующая страница"
-                      >
-                        <ChevronRight size={20} />
-                      </button>
                     </div>
-                  )}
-                </>
-              )}
+
+                    {totalPages > 1 && (
+                      <div className="mt-8 sm:mt-10">
+                        <Pagination
+                          currentPage={currentPage}
+                          totalPages={totalPages}
+                          onPrevious={previousPage}
+                          onNext={nextPage}
+                          onPageChange={goToPage}
+                        />
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </main>
   );
 }

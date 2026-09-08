@@ -1,24 +1,281 @@
+import { useEffect, useRef, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+
 import MovieCard from "../components/MovieCard";
+import MovieCarousel from "../components/MovieCarousel";
+import Pagination from "../components/Pagination";
+
+import backgroundImage from "../assets/site-background.jpg";
 
 function Favorites({ favorites, setFavorites }) {
-  return (
-    <main className="mx-auto max-w-7xl px-6 py-10">
-      <h2 className="mb-6 text-2xl font-bold">Избранное</h2>
+  const location = useLocation();
 
-      {favorites.length === 0 ? (
-        <p className="text-gray-400">В избранном пока ничего нет.</p>
-      ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {favorites.map((movie) => (
-            <MovieCard
-              key={movie.id}
-              movie={movie}
-              favorites={favorites}
-              setFavorites={setFavorites}
-            />
-          ))}
-        </div>
-      )}
+  const moviesPerPage = 10;
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.ceil(favorites.length / moviesPerPage);
+
+  const startIndex = (currentPage - 1) * moviesPerPage;
+
+  const currentFavorites = favorites.slice(
+    startIndex,
+    startIndex + moviesPerPage,
+  );
+
+  const favoritesBlockRef = useRef(null);
+
+  const shouldScrollToFavoritesRef = useRef(false);
+
+  useEffect(() => {
+    if (totalPages > 0 && currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
+
+  useEffect(() => {
+    if (!shouldScrollToFavoritesRef.current) {
+      return;
+    }
+
+    shouldScrollToFavoritesRef.current = false;
+
+    if (!favoritesBlockRef.current) {
+      return;
+    }
+
+    requestAnimationFrame(() => {
+      const favoritesTop =
+        favoritesBlockRef.current.getBoundingClientRect().top + window.scrollY;
+
+      const header = document.querySelector("header");
+
+      const headerHeight = header ? header.getBoundingClientRect().height : 0;
+
+      const gap = 8;
+
+      const targetPosition = favoritesTop - headerHeight - gap;
+
+      window.scrollTo({
+        top: Math.max(targetPosition, 0),
+        behavior: "smooth",
+      });
+    });
+  }, [currentPage]);
+
+  const previousPage = () => {
+    if (currentPage === 1) {
+      return;
+    }
+
+    shouldScrollToFavoritesRef.current = true;
+
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+  };
+
+  const nextPage = () => {
+    if (currentPage === totalPages) {
+      return;
+    }
+
+    shouldScrollToFavoritesRef.current = true;
+
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  };
+
+  const goToPage = (page) => {
+    if (page < 1 || page > totalPages) {
+      return;
+    }
+
+    if (page === currentPage) {
+      return;
+    }
+
+    shouldScrollToFavoritesRef.current = true;
+
+    setCurrentPage(page);
+  };
+
+  return (
+    <main className="relative min-h-screen overflow-x-hidden bg-[#0f1115] text-white">
+      <div
+        className="pointer-events-none fixed inset-x-0 top-0 z-0 h-[85vh] bg-cover bg-top bg-no-repeat"
+        style={{
+          backgroundImage: `
+            linear-gradient(
+              to bottom,
+              rgba(15, 17, 21, 0) 0%,
+              rgba(15, 17, 21, 0.02) 20%,
+              rgba(15, 17, 21, 0.06) 40%,
+              rgba(15, 17, 21, 0.15) 55%,
+              rgba(15, 17, 21, 0.35) 70%,
+              rgba(15, 17, 21, 0.65) 82%,
+              rgba(15, 17, 21, 0.88) 92%,
+              #0f1115 100%
+            ),
+            url(${backgroundImage})
+          `,
+        }}
+      />
+
+      <div className="relative z-10">
+        <section className="mx-auto max-w-7xl px-3 pt-3 sm:px-6 sm:pt-6">
+          <nav className="mx-auto flex w-full gap-2 overflow-x-auto pb-1 sm:w-[calc(100%-104px)]">
+            <Link
+              to="/"
+              className={`flex min-w-[90px] flex-1 shrink-0 items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium transition sm:min-w-[110px] sm:px-4 ${
+                location.pathname === "/"
+                  ? "bg-[#242831]/90 text-white"
+                  : "bg-[#181b21]/95 text-gray-400 hover:bg-[#242831] hover:text-white"
+              }`}
+            >
+              Главная
+            </Link>
+
+            <Link
+              to="/new"
+              className={`flex min-w-[90px] flex-1 shrink-0 items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium transition sm:min-w-[110px] sm:px-4 ${
+                location.pathname === "/new"
+                  ? "bg-[#242831]/90 text-white"
+                  : "bg-[#181b21]/95 text-gray-400 hover:bg-[#242831] hover:text-white"
+              }`}
+            >
+              Новинки
+            </Link>
+
+            <Link
+              to="/collections"
+              className={`flex min-w-[100px] flex-1 shrink-0 items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium transition sm:min-w-[110px] sm:px-4 ${
+                location.pathname === "/collections"
+                  ? "bg-[#242831]/90 text-white"
+                  : "bg-[#181b21]/95 text-gray-400 hover:bg-[#242831] hover:text-white"
+              }`}
+            >
+              Подборки
+            </Link>
+
+            <Link
+              to="/movies"
+              className={`flex min-w-[90px] flex-1 shrink-0 items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium transition sm:min-w-[110px] sm:px-4 ${
+                location.pathname === "/movies"
+                  ? "bg-[#242831]/90 text-white"
+                  : "bg-[#181b21]/95 text-gray-400 hover:bg-[#242831] hover:text-white"
+              }`}
+            >
+              Фильмы
+            </Link>
+
+            <Link
+              to="/series"
+              className={`flex min-w-[90px] flex-1 shrink-0 items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium transition sm:min-w-[110px] sm:px-4 ${
+                location.pathname === "/series"
+                  ? "bg-[#242831]/90 text-white"
+                  : "bg-[#181b21]/95 text-gray-400 hover:bg-[#242831] hover:text-white"
+              }`}
+            >
+              Сериалы
+            </Link>
+
+            <Link
+              to="/cartoons"
+              className={`flex min-w-[110px] flex-1 shrink-0 items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium transition sm:min-w-[130px] sm:px-4 ${
+                location.pathname === "/cartoons"
+                  ? "bg-[#242831]/90 text-white"
+                  : "bg-[#181b21]/95 text-gray-400 hover:bg-[#242831] hover:text-white"
+              }`}
+            >
+              Мультфильмы
+            </Link>
+
+            <Link
+              to="/favorites"
+              className={`flex min-w-[100px] flex-1 shrink-0 items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium transition sm:min-w-[110px] sm:px-4 ${
+                location.pathname === "/favorites"
+                  ? "bg-[#242831]/90 text-white"
+                  : "bg-[#181b21]/95 text-gray-400 hover:bg-[#242831] hover:text-white"
+              }`}
+            >
+              Избранное
+            </Link>
+          </nav>
+        </section>
+
+        <MovieCarousel />
+
+        <div className="h-8 sm:h-16" />
+
+        <section className="mx-auto max-w-7xl px-3 pb-8 sm:px-6 sm:pb-16">
+          <div
+            ref={favoritesBlockRef}
+            className="mx-auto min-h-[700px] w-full overflow-hidden rounded-xl border border-gray-800 bg-[#181b21]/95 backdrop-blur-sm sm:w-[calc(100%-104px)] sm:rounded-2xl"
+          >
+            <div className="flex min-h-[700px]">
+              <aside className="hidden w-56 shrink-0 border-r border-gray-800 p-6 md:block">
+                <div className="text-sm text-gray-500">
+                  Здесь будет внутренняя навигация
+                </div>
+              </aside>
+              <div className="min-w-0 flex-1 p-4 sm:p-6 lg:p-8">
+                {/* Заголовок */}
+
+                <h1 className="mb-5 text-2xl font-bold sm:mb-6 sm:text-3xl">
+                  Избранное
+                </h1>
+
+                {favorites.length > 0 && totalPages > 1 && (
+                  <div className="mb-6 sm:mb-8">
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      onPrevious={previousPage}
+                      onNext={nextPage}
+                      onPageChange={goToPage}
+                    />
+                  </div>
+                )}
+
+                {favorites.length === 0 ? (
+                  <div className="rounded-xl border border-gray-800 bg-[#0f1115]/90 p-8 text-center sm:p-10">
+                    <h2 className="text-xl font-semibold">
+                      В избранном пока ничего нет
+                    </h2>
+
+                    <p className="mt-2 text-sm text-gray-500">
+                      Добавляйте фильмы в избранное, чтобы они появились здесь.
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex flex-col gap-4 sm:gap-5">
+                      {currentFavorites.map((movie) => (
+                        <MovieCard
+                          key={movie.id}
+                          movie={movie}
+                          favorites={favorites}
+                          setFavorites={setFavorites}
+                        />
+                      ))}
+                    </div>
+
+                    {totalPages > 1 && (
+                      <div className="mt-8 sm:mt-10">
+                        <Pagination
+                          currentPage={currentPage}
+                          totalPages={totalPages}
+                          onPrevious={previousPage}
+                          onNext={nextPage}
+                          onPageChange={goToPage}
+                        />
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
     </main>
   );
 }

@@ -1,31 +1,60 @@
 import { useState } from "react";
 import { ArrowLeft, Send } from "lucide-react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+
+import MovieCarousel from "../components/MovieCarousel";
+
 import movies from "../data/movies";
 import { useRating } from "../context/RatingContext";
+
+import backgroundImage from "../assets/site-background.jpg";
 
 function MoviePage({ favorites = [], setFavorites = () => {} }) {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const movie = movies.find((item) => item.id === Number(id));
 
   const { getMovieRating, setMovieRating } = useRating();
 
   const [hoveredRating, setHoveredRating] = useState(0);
-
   const [commentText, setCommentText] = useState("");
-
   const [comments, setComments] = useState([]);
 
   if (!movie) {
     return (
-      <main className="min-h-screen bg-[#0f1115] text-white">
-        <section className="mx-auto max-w-7xl px-6 py-10">
-          <div className="rounded-2xl border border-gray-800 bg-[#181b21] p-8">
-            <h2 className="mb-4 text-2xl font-bold">Фильм не найден</h2>
+      <main className="relative min-h-screen overflow-x-hidden bg-[#0f1115] text-white">
+        <div
+          className="pointer-events-none fixed inset-x-0 top-0 z-0 h-[85vh] bg-cover bg-top bg-no-repeat"
+          style={{
+            backgroundImage: `
+              linear-gradient(
+                to bottom,
+                rgba(15, 17, 21, 0) 0%,
+                rgba(15, 17, 21, 0.02) 20%,
+                rgba(15, 17, 21, 0.06) 40%,
+                rgba(15, 17, 21, 0.15) 55%,
+                rgba(15, 17, 21, 0.35) 70%,
+                rgba(15, 17, 21, 0.65) 82%,
+                rgba(15, 17, 21, 0.88) 92%,
+                #0f1115 100%
+              ),
+              url(${backgroundImage})
+            `,
+          }}
+        />
 
-            <Link to="/" className="text-gray-400 transition hover:text-white">
+        <section className="relative z-10 mx-auto max-w-7xl px-3 py-6 sm:px-6 sm:py-10">
+          <div className="rounded-xl border border-gray-800 bg-[#181b21] p-5 sm:rounded-2xl sm:p-8">
+            <h2 className="mb-4 text-xl font-bold sm:text-2xl">
+              Фильм не найден
+            </h2>
+
+            <Link
+              to="/"
+              className="text-sm text-gray-400 transition hover:text-white sm:text-base"
+            >
               ← Вернуться к фильмам
             </Link>
           </div>
@@ -76,7 +105,9 @@ function MoviePage({ favorites = [], setFavorites = () => {} }) {
 
     const text = commentText.trim();
 
-    if (!text) return;
+    if (!text) {
+      return;
+    }
 
     const newComment = {
       id: Date.now(),
@@ -90,27 +121,133 @@ function MoviePage({ favorites = [], setFavorites = () => {} }) {
   };
 
   return (
-    <main className="min-h-screen bg-[#0f1115] text-white">
-      <section className="mx-auto max-w-[1180px] px-6 py-8">
-        <div className="overflow-hidden rounded-2xl border border-gray-800 bg-[#181b21]">
-          <div className="flex">
-            <aside className="hidden w-72 shrink-0 border-r border-gray-800 p-7 md:block">
-              <div className="text-sm text-gray-500">
-                Здесь будет внутренняя навигация
-              </div>
-            </aside>
-            <div className="min-w-0 flex-1">
-              <div className="p-5 sm:p-6 lg:p-8">
+    <main className="relative min-h-screen overflow-x-hidden bg-[#0f1115] text-white">
+      <div
+        className="pointer-events-none fixed inset-x-0 top-0 z-0 h-[85vh] bg-cover bg-top bg-no-repeat"
+        style={{
+          backgroundImage: `
+            linear-gradient(
+              to bottom,
+              rgba(15, 17, 21, 0) 0%,
+              rgba(15, 17, 21, 0.02) 20%,
+              rgba(15, 17, 21, 0.06) 40%,
+              rgba(15, 17, 21, 0.15) 55%,
+              rgba(15, 17, 21, 0.35) 70%,
+              rgba(15, 17, 21, 0.65) 82%,
+              rgba(15, 17, 21, 0.88) 92%,
+              #0f1115 100%
+            ),
+            url(${backgroundImage})
+          `,
+        }}
+      />
+
+      <div className="relative z-10">
+        <section className="mx-auto max-w-7xl px-3 pt-3 sm:px-6 sm:pt-6">
+          <nav className="mx-auto flex w-full gap-2 overflow-x-auto pb-1 sm:w-[calc(100%-104px)]">
+            <Link
+              to="/"
+              className={`flex min-w-[90px] flex-1 shrink-0 items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium transition sm:min-w-[110px] sm:px-4 ${
+                location.pathname === "/"
+                  ? "bg-[#242831]/90 text-white"
+                  : "bg-[#181b21]/95 text-gray-400 hover:bg-[#242831] hover:text-white"
+              }`}
+            >
+              Главная
+            </Link>
+
+            <Link
+              to="/new"
+              className={`flex min-w-[90px] flex-1 shrink-0 items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium transition sm:min-w-[110px] sm:px-4 ${
+                location.pathname === "/new"
+                  ? "bg-[#242831]/90 text-white"
+                  : "bg-[#181b21]/95 text-gray-400 hover:bg-[#242831] hover:text-white"
+              }`}
+            >
+              Новинки
+            </Link>
+
+            <Link
+              to="/collections"
+              className={`flex min-w-[100px] flex-1 shrink-0 items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium transition sm:min-w-[110px] sm:px-4 ${
+                location.pathname === "/collections"
+                  ? "bg-[#242831]/90 text-white"
+                  : "bg-[#181b21]/95 text-gray-400 hover:bg-[#242831] hover:text-white"
+              }`}
+            >
+              Подборки
+            </Link>
+
+            <Link
+              to="/movies"
+              className={`flex min-w-[90px] flex-1 shrink-0 items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium transition sm:min-w-[110px] sm:px-4 ${
+                location.pathname === "/movies"
+                  ? "bg-[#242831]/90 text-white"
+                  : "bg-[#181b21]/95 text-gray-400 hover:bg-[#242831] hover:text-white"
+              }`}
+            >
+              Фильмы
+            </Link>
+
+            <Link
+              to="/series"
+              className={`flex min-w-[90px] flex-1 shrink-0 items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium transition sm:min-w-[110px] sm:px-4 ${
+                location.pathname === "/series"
+                  ? "bg-[#242831]/90 text-white"
+                  : "bg-[#181b21]/95 text-gray-400 hover:bg-[#242831] hover:text-white"
+              }`}
+            >
+              Сериалы
+            </Link>
+
+            <Link
+              to="/cartoons"
+              className={`flex min-w-[110px] flex-1 shrink-0 items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium transition sm:min-w-[130px] sm:px-4 ${
+                location.pathname === "/cartoons"
+                  ? "bg-[#242831]/90 text-white"
+                  : "bg-[#181b21]/95 text-gray-400 hover:bg-[#242831] hover:text-white"
+              }`}
+            >
+              Мультфильмы
+            </Link>
+
+            <Link
+              to="/favorites"
+              className={`flex min-w-[100px] flex-1 shrink-0 items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium transition sm:min-w-[110px] sm:px-4 ${
+                location.pathname === "/favorites"
+                  ? "bg-[#242831]/90 text-white"
+                  : "bg-[#181b21]/95 text-gray-400 hover:bg-[#242831] hover:text-white"
+              }`}
+            >
+              Избранное
+            </Link>
+          </nav>
+        </section>
+
+        <MovieCarousel />
+
+        <div className="h-8 sm:h-16" />
+
+        <section className="mx-auto max-w-7xl px-3 pb-8 sm:px-6 sm:pb-16">
+          <div className="mx-auto w-full overflow-hidden rounded-xl border border-gray-800 bg-[#181b21]/95 backdrop-blur-sm sm:w-[calc(100%-104px)] sm:rounded-2xl">
+            <div className="flex">
+              <aside className="hidden w-56 shrink-0 border-r border-gray-800 p-6 md:block">
+                <div className="text-sm text-gray-500">
+                  Здесь будет внутренняя навигация
+                </div>
+              </aside>
+              <div className="min-w-0 flex-1 p-4 sm:p-6 lg:p-8">
                 <button
                   type="button"
                   onClick={() => navigate(-1)}
-                  className="mb-6 flex items-center gap-2 text-sm text-gray-400 transition hover:text-white"
+                  className="mb-5 flex items-center gap-2 text-sm text-gray-400 transition hover:text-white sm:mb-6"
                 >
                   <ArrowLeft size={17} />
                   Назад
                 </button>
-                <section className="grid items-start gap-7 lg:grid-cols-[260px_minmax(0,1fr)]">
-                  <div className="mx-auto w-[260px] shrink-0 overflow-hidden rounded-xl bg-black lg:mx-0">
+
+                <section className="grid items-start gap-6 lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-7">
+                  <div className="mx-auto w-full max-w-[220px] shrink-0 overflow-hidden rounded-xl bg-black sm:max-w-[260px] lg:mx-0">
                     <div className="aspect-[2/3]">
                       <img
                         src={movie.poster}
@@ -119,21 +256,21 @@ function MoviePage({ favorites = [], setFavorites = () => {} }) {
                       />
                     </div>
                   </div>
+
                   <div className="min-w-0">
-                    <div className="flex items-start justify-between gap-5">
-                      <h1 className="min-w-0 flex-1 text-3xl font-bold leading-tight">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-5">
+                      <h1 className="min-w-0 flex-1 text-2xl font-bold leading-tight sm:text-3xl">
                         {movie.title}
                       </h1>
 
                       <div
-                        className="flex shrink-0 flex-col items-end"
+                        className="flex shrink-0 flex-col items-start sm:items-end"
                         onMouseLeave={() => setHoveredRating(0)}
                       >
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1 sm:gap-2">
                           <div className="flex items-center">
                             {[1, 2, 3, 4, 5].map((star) => {
                               const isActive = star <= displayedRating;
-
                               const isHovered = star === hoveredRating;
 
                               return (
@@ -181,6 +318,7 @@ function MoviePage({ favorites = [], setFavorites = () => {} }) {
                             {movie.country}
                           </p>
                         </div>
+
                         <div>
                           <p className="text-xs text-gray-500">Жанр</p>
 
@@ -188,6 +326,7 @@ function MoviePage({ favorites = [], setFavorites = () => {} }) {
                             {movie.genre}
                           </p>
                         </div>
+
                         <div>
                           <p className="text-xs text-gray-500">Качество</p>
 
@@ -196,6 +335,7 @@ function MoviePage({ favorites = [], setFavorites = () => {} }) {
                           </p>
                         </div>
                       </div>
+
                       <div className="space-y-4">
                         <div>
                           <p className="text-xs text-gray-500">Год выпуска</p>
@@ -240,39 +380,57 @@ function MoviePage({ favorites = [], setFavorites = () => {} }) {
                           : movie.actors}
                       </p>
                     </section>
+
+                    <button
+                      type="button"
+                      onClick={toggleFavorite}
+                      className={`mt-6 rounded-lg border px-4 py-2 text-sm transition ${
+                        isFavorite
+                          ? "border-rose-500/40 bg-rose-500/10 text-rose-400 hover:bg-rose-500/15"
+                          : "border-gray-700 bg-[#242831] text-gray-300 hover:border-gray-600 hover:bg-[#2d323c] hover:text-white"
+                      }`}
+                    >
+                      {isFavorite ? "✓ В избранном" : "♡ Добавить в избранное"}
+                    </button>
                   </div>
                 </section>
 
-                <section className="mt-8">
-                  <h2 className="mb-3 text-lg font-semibold">Описание</h2>
+                <section className="mt-8 sm:mt-10">
+                  <h2 className="mb-3 text-lg font-semibold sm:text-xl">
+                    Описание
+                  </h2>
 
                   <p className="max-w-5xl text-sm leading-7 text-gray-400">
                     {movie.description}
                   </p>
                 </section>
-
                 <section
                   id="player"
-                  className="mt-12 border-t border-gray-800 pt-8"
+                  className="mt-10 border-t border-gray-800 pt-7 sm:mt-12 sm:pt-8"
                 >
-                  <h2 className="mb-5 text-2xl font-bold">Смотреть фильм</h2>
+                  <h2 className="mb-5 text-xl font-bold sm:text-2xl">
+                    Смотреть фильм
+                  </h2>
 
                   <div className="flex aspect-video items-center justify-center rounded-xl border border-gray-800 bg-black">
                     <div className="text-center">
-                      <div className="mb-3 text-5xl">▶</div>
+                      <div className="mb-3 text-4xl sm:text-5xl">▶</div>
 
-                      <p className="text-gray-400">Здесь будет видеоплеер</p>
+                      <p className="text-sm text-gray-400 sm:text-base">
+                        Здесь будет видеоплеер
+                      </p>
                     </div>
                   </div>
                 </section>
-
                 <section
                   id="recommendations"
-                  className="mt-12 border-t border-gray-800 pt-8"
+                  className="mt-10 border-t border-gray-800 pt-7 sm:mt-12 sm:pt-8"
                 >
-                  <h2 className="mb-5 text-2xl font-bold">Рекомендации</h2>
+                  <h2 className="mb-5 text-xl font-bold sm:text-2xl">
+                    Рекомендации
+                  </h2>
 
-                  <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5">
                     {recommendations.map((recommendedMovie) => (
                       <Link
                         key={recommendedMovie.id}
@@ -301,27 +459,29 @@ function MoviePage({ favorites = [], setFavorites = () => {} }) {
 
                 <section
                   id="comments"
-                  className="mt-12 border-t border-gray-800 pt-8"
+                  className="mt-10 border-t border-gray-800 pt-7 sm:mt-12 sm:pt-8"
                 >
-                  <h2 className="mb-5 text-2xl font-bold">Комментарии</h2>
+                  <h2 className="mb-5 text-xl font-bold sm:text-2xl">
+                    Комментарии
+                  </h2>
 
                   <form
                     onSubmit={addComment}
-                    className="rounded-xl border border-gray-800 bg-[#0f1115] p-4"
+                    className="rounded-xl border border-gray-800 bg-[#0f1115] p-3 sm:p-4"
                   >
                     <textarea
                       value={commentText}
                       onChange={(event) => setCommentText(event.target.value)}
                       placeholder="Напишите свой комментарий..."
                       rows={4}
-                      className="w-full resize-none rounded-lg border border-gray-800 bg-[#181b21] p-4 text-sm text-white outline-none placeholder:text-gray-600 focus:border-gray-600"
+                      className="w-full resize-none rounded-lg border border-gray-800 bg-[#181b21] p-3 text-sm text-white outline-none placeholder:text-gray-600 focus:border-gray-600 sm:p-4"
                     />
 
                     <div className="mt-3 flex justify-end">
                       <button
                         type="submit"
                         disabled={!commentText.trim()}
-                        className="flex items-center gap-2 rounded-lg bg-[#242831] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#2d323c] disabled:cursor-not-allowed disabled:opacity-40"
+                        className="flex items-center gap-2 rounded-lg bg-[#242831] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#2d323c] disabled:cursor-not-allowed disabled:opacity-40 sm:px-5"
                       >
                         <Send size={16} />
                         Отправить
@@ -331,7 +491,7 @@ function MoviePage({ favorites = [], setFavorites = () => {} }) {
 
                   <div className="mt-6 space-y-4">
                     {comments.length === 0 ? (
-                      <div className="rounded-xl border border-gray-800 bg-[#0f1115] p-6 text-center">
+                      <div className="rounded-xl border border-gray-800 bg-[#0f1115] p-5 text-center sm:p-6">
                         <p className="text-sm text-gray-500">
                           Пока нет комментариев.
                         </p>
@@ -344,7 +504,7 @@ function MoviePage({ favorites = [], setFavorites = () => {} }) {
                       comments.map((comment) => (
                         <article
                           key={comment.id}
-                          className="rounded-xl border border-gray-800 bg-[#0f1115] p-5"
+                          className="rounded-xl border border-gray-800 bg-[#0f1115] p-4 sm:p-5"
                         >
                           <div className="flex items-center justify-between gap-4">
                             <span className="text-sm font-semibold text-gray-200">
@@ -367,8 +527,8 @@ function MoviePage({ favorites = [], setFavorites = () => {} }) {
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </main>
   );
 }
