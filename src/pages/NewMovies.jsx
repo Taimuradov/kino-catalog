@@ -8,7 +8,7 @@ import Pagination from "../components/Pagination";
 import Navigation from "../components/Navigation";
 import Background from "../components/Background";
 
-function Home({ favorites, setFavorites, homeResetKey }) {
+function NewMovies({ favorites, setFavorites }) {
   const moviesPerPage = 10;
 
   const [searchParams] = useSearchParams();
@@ -16,16 +16,31 @@ function Home({ favorites, setFavorites, homeResetKey }) {
 
   const searchQuery = searchParams.get("search")?.trim().toLowerCase() || "";
 
-  // Автоматически сортируем фильмы от самой новой премьеры
-  // к самой старой. Исходный массив movies не изменяется.
-  const sortedMovies = [...movies].sort((a, b) => {
-    const dateA = new Date(a.premiere);
-    const dateB = new Date(b.premiere);
+  const currentYear = new Date().getFullYear();
 
-    return dateB - dateA;
-  });
+  const threeYearsAgo = currentYear - 2;
 
-  const filteredMovies = sortedMovies.filter((movie) => {
+  // Оставляем только фильмы, вышедшие за последние три календарных года.
+  const newMovies = movies
+    .filter((movie) => {
+      const premiereDate = new Date(movie.premiere);
+
+      if (Number.isNaN(premiereDate.getTime())) {
+        return false;
+      }
+
+      const premiereYear = premiereDate.getFullYear();
+
+      return premiereYear >= threeYearsAgo && premiereYear <= currentYear;
+    })
+    .sort((a, b) => {
+      const dateA = new Date(a.premiere);
+      const dateB = new Date(b.premiere);
+
+      return dateB - dateA;
+    });
+
+  const filteredMovies = newMovies.filter((movie) => {
     if (!searchQuery) {
       return true;
     }
@@ -68,15 +83,6 @@ function Home({ favorites, setFavorites, homeResetKey }) {
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  }, [homeResetKey]);
 
   useEffect(() => {
     if (totalPages > 0 && currentPage > totalPages) {
@@ -184,7 +190,7 @@ function Home({ favorites, setFavorites, homeResetKey }) {
 
               <div className="min-w-0 flex-1 p-4 sm:p-6 lg:p-8">
                 <h1 className="mb-5 text-2xl font-bold sm:mb-6 sm:text-3xl">
-                  {searchQuery ? "Результаты поиска" : "Фильмы"}
+                  {searchQuery ? "Результаты поиска" : "Новинки"}
                 </h1>
 
                 {searchQuery && (
@@ -287,4 +293,4 @@ function Home({ favorites, setFavorites, homeResetKey }) {
   );
 }
 
-export default Home;
+export default NewMovies;

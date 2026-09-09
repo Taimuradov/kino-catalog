@@ -1,7 +1,7 @@
 import { Search } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 
-function Header() {
+function Header({ onHomeClick }) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const searchQuery = searchParams.get("search") || "";
@@ -21,6 +21,10 @@ function Header() {
   };
 
   const handleHomeClick = () => {
+    setSearchParams({});
+
+    onHomeClick();
+
     window.scrollTo({
       top: 0,
       behavior: "smooth",

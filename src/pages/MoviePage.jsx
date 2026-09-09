@@ -1,18 +1,17 @@
 import { useState } from "react";
 import { ArrowLeft, Send } from "lucide-react";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 import MovieCarousel from "../components/MovieCarousel";
+import Navigation from "../components/Navigation";
+import Background from "../components/Background";
 
 import movies from "../data/movies";
 import { useRating } from "../context/RatingContext";
 
-import backgroundImage from "../assets/site-background.jpg";
-
 function MoviePage({ favorites = [], setFavorites = () => {} }) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const movie = movies.find((item) => item.id === Number(id));
 
@@ -25,25 +24,7 @@ function MoviePage({ favorites = [], setFavorites = () => {} }) {
   if (!movie) {
     return (
       <main className="relative min-h-screen overflow-x-hidden bg-[#0f1115] text-white">
-        <div
-          className="pointer-events-none fixed inset-x-0 top-0 z-0 h-[85vh] bg-cover bg-top bg-no-repeat"
-          style={{
-            backgroundImage: `
-              linear-gradient(
-                to bottom,
-                rgba(15, 17, 21, 0) 0%,
-                rgba(15, 17, 21, 0.02) 20%,
-                rgba(15, 17, 21, 0.06) 40%,
-                rgba(15, 17, 21, 0.15) 55%,
-                rgba(15, 17, 21, 0.35) 70%,
-                rgba(15, 17, 21, 0.65) 82%,
-                rgba(15, 17, 21, 0.88) 92%,
-                #0f1115 100%
-              ),
-              url(${backgroundImage})
-            `,
-          }}
-        />
+        <Background />
 
         <section className="relative z-10 mx-auto max-w-7xl px-3 py-6 sm:px-6 sm:py-10">
           <div className="rounded-xl border border-gray-800 bg-[#181b21] p-5 sm:rounded-2xl sm:p-8">
@@ -122,107 +103,10 @@ function MoviePage({ favorites = [], setFavorites = () => {} }) {
 
   return (
     <main className="relative min-h-screen overflow-x-hidden bg-[#0f1115] text-white">
-      <div
-        className="pointer-events-none fixed inset-x-0 top-0 z-0 h-[85vh] bg-cover bg-top bg-no-repeat"
-        style={{
-          backgroundImage: `
-            linear-gradient(
-              to bottom,
-              rgba(15, 17, 21, 0) 0%,
-              rgba(15, 17, 21, 0.02) 20%,
-              rgba(15, 17, 21, 0.06) 40%,
-              rgba(15, 17, 21, 0.15) 55%,
-              rgba(15, 17, 21, 0.35) 70%,
-              rgba(15, 17, 21, 0.65) 82%,
-              rgba(15, 17, 21, 0.88) 92%,
-              #0f1115 100%
-            ),
-            url(${backgroundImage})
-          `,
-        }}
-      />
+      <Background />
 
       <div className="relative z-10">
-        <section className="mx-auto max-w-7xl px-3 pt-3 sm:px-6 sm:pt-6">
-          <nav className="mx-auto flex w-full gap-2 overflow-x-auto pb-1 sm:w-[calc(100%-104px)]">
-            <Link
-              to="/"
-              className={`flex min-w-[90px] flex-1 shrink-0 items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium transition sm:min-w-[110px] sm:px-4 ${
-                location.pathname === "/"
-                  ? "bg-[#242831]/90 text-white"
-                  : "bg-[#181b21]/95 text-gray-400 hover:bg-[#242831] hover:text-white"
-              }`}
-            >
-              Главная
-            </Link>
-
-            <Link
-              to="/new"
-              className={`flex min-w-[90px] flex-1 shrink-0 items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium transition sm:min-w-[110px] sm:px-4 ${
-                location.pathname === "/new"
-                  ? "bg-[#242831]/90 text-white"
-                  : "bg-[#181b21]/95 text-gray-400 hover:bg-[#242831] hover:text-white"
-              }`}
-            >
-              Новинки
-            </Link>
-
-            <Link
-              to="/collections"
-              className={`flex min-w-[100px] flex-1 shrink-0 items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium transition sm:min-w-[110px] sm:px-4 ${
-                location.pathname === "/collections"
-                  ? "bg-[#242831]/90 text-white"
-                  : "bg-[#181b21]/95 text-gray-400 hover:bg-[#242831] hover:text-white"
-              }`}
-            >
-              Подборки
-            </Link>
-
-            <Link
-              to="/movies"
-              className={`flex min-w-[90px] flex-1 shrink-0 items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium transition sm:min-w-[110px] sm:px-4 ${
-                location.pathname === "/movies"
-                  ? "bg-[#242831]/90 text-white"
-                  : "bg-[#181b21]/95 text-gray-400 hover:bg-[#242831] hover:text-white"
-              }`}
-            >
-              Фильмы
-            </Link>
-
-            <Link
-              to="/series"
-              className={`flex min-w-[90px] flex-1 shrink-0 items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium transition sm:min-w-[110px] sm:px-4 ${
-                location.pathname === "/series"
-                  ? "bg-[#242831]/90 text-white"
-                  : "bg-[#181b21]/95 text-gray-400 hover:bg-[#242831] hover:text-white"
-              }`}
-            >
-              Сериалы
-            </Link>
-
-            <Link
-              to="/cartoons"
-              className={`flex min-w-[110px] flex-1 shrink-0 items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium transition sm:min-w-[130px] sm:px-4 ${
-                location.pathname === "/cartoons"
-                  ? "bg-[#242831]/90 text-white"
-                  : "bg-[#181b21]/95 text-gray-400 hover:bg-[#242831] hover:text-white"
-              }`}
-            >
-              Мультфильмы
-            </Link>
-
-            <Link
-              to="/favorites"
-              className={`flex min-w-[100px] flex-1 shrink-0 items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium transition sm:min-w-[110px] sm:px-4 ${
-                location.pathname === "/favorites"
-                  ? "bg-[#242831]/90 text-white"
-                  : "bg-[#181b21]/95 text-gray-400 hover:bg-[#242831] hover:text-white"
-              }`}
-            >
-              Избранное
-            </Link>
-          </nav>
-        </section>
+        <Navigation />
 
         <MovieCarousel />
 
@@ -236,6 +120,7 @@ function MoviePage({ favorites = [], setFavorites = () => {} }) {
                   Здесь будет внутренняя навигация
                 </div>
               </aside>
+
               <div className="min-w-0 flex-1 p-4 sm:p-6 lg:p-8">
                 <button
                   type="button"
@@ -404,6 +289,7 @@ function MoviePage({ favorites = [], setFavorites = () => {} }) {
                     {movie.description}
                   </p>
                 </section>
+
                 <section
                   id="player"
                   className="mt-10 border-t border-gray-800 pt-7 sm:mt-12 sm:pt-8"
@@ -422,6 +308,7 @@ function MoviePage({ favorites = [], setFavorites = () => {} }) {
                     </div>
                   </div>
                 </section>
+
                 <section
                   id="recommendations"
                   className="mt-10 border-t border-gray-800 pt-7 sm:mt-12 sm:pt-8"

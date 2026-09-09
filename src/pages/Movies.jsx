@@ -8,7 +8,7 @@ import Pagination from "../components/Pagination";
 import Navigation from "../components/Navigation";
 import Background from "../components/Background";
 
-function Home({ favorites, setFavorites, homeResetKey }) {
+function Movies({ favorites, setFavorites }) {
   const moviesPerPage = 10;
 
   const [searchParams] = useSearchParams();
@@ -16,16 +16,26 @@ function Home({ favorites, setFavorites, homeResetKey }) {
 
   const searchQuery = searchParams.get("search")?.trim().toLowerCase() || "";
 
-  // Автоматически сортируем фильмы от самой новой премьеры
-  // к самой старой. Исходный массив movies не изменяется.
-  const sortedMovies = [...movies].sort((a, b) => {
-    const dateA = new Date(a.premiere);
-    const dateB = new Date(b.premiere);
+  const movieList = [...movies]
+    .filter((movie) => {
+      const type = Array.isArray(movie.type)
+        ? movie.type.join(" ").toLowerCase()
+        : movie.type?.toLowerCase() || "";
 
-    return dateB - dateA;
-  });
+      return (
+        type.includes("фильм") ||
+        type.includes("movie") ||
+        type.includes("film")
+      );
+    })
+    .sort((a, b) => {
+      const dateA = new Date(a.premiere);
+      const dateB = new Date(b.premiere);
 
-  const filteredMovies = sortedMovies.filter((movie) => {
+      return dateB - dateA;
+    });
+
+  const filteredMovies = movieList.filter((movie) => {
     if (!searchQuery) {
       return true;
     }
@@ -68,15 +78,6 @@ function Home({ favorites, setFavorites, homeResetKey }) {
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  }, [homeResetKey]);
 
   useEffect(() => {
     if (totalPages > 0 && currentPage > totalPages) {
@@ -246,7 +247,7 @@ function Home({ favorites, setFavorites, homeResetKey }) {
 
                 {currentMovies.length === 0 ? (
                   <div className="rounded-xl border border-gray-800 bg-[#0f1115]/90 p-8 text-center sm:p-10">
-                    <h2 className="text-xl font-semibold">Ничего не найдено</h2>
+                    <h2 className="text-xl font-semibold">Фильмы не найдены</h2>
 
                     <p className="mt-2 text-sm text-gray-500">
                       Попробуйте изменить запрос.
@@ -287,4 +288,4 @@ function Home({ favorites, setFavorites, homeResetKey }) {
   );
 }
 
-export default Home;
+export default Movies;
