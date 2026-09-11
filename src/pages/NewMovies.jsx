@@ -20,7 +20,6 @@ function NewMovies({ favorites, setFavorites }) {
 
   const threeYearsAgo = currentYear - 2;
 
-  // Оставляем только фильмы, вышедшие за последние три календарных года.
   const newMovies = movies
     .filter((movie) => {
       const premiereDate = new Date(movie.premiere);

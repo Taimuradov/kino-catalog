@@ -22,8 +22,6 @@ function MoviePage({ favorites = [], setFavorites = () => {} }) {
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState([]);
 
-  // Каждый раз при открытии страницы фильма
-  // начинаем с самого верха.
   useEffect(() => {
     window.scrollTo({
       top: 300,
