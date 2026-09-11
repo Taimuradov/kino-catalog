@@ -10,7 +10,6 @@ import Favorites from "./pages/Favorites";
 import MoviePage from "./pages/MoviePage";
 
 import Header from "./components/Header";
-import ScrollToTop from "./components/ScrollToTop";
 
 import { RatingProvider } from "./context/RatingContext";
 
@@ -26,8 +25,6 @@ function App() {
     <BrowserRouter>
       <RatingProvider>
         <div className="min-h-screen bg-[#0f1115] text-white">
-          <ScrollToTop />
-
           <Header onHomeClick={handleHomeReset} />
 
           <Routes>

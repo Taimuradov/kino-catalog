@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft, Send } from "lucide-react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
 import MovieCarousel from "../components/MovieCarousel";
 import Navigation from "../components/Navigation";
@@ -12,6 +12,7 @@ import { useRating } from "../context/RatingContext";
 function MoviePage({ favorites = [], setFavorites = () => {} }) {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const movie = movies.find((item) => item.id === Number(id));
 
@@ -20,6 +21,33 @@ function MoviePage({ favorites = [], setFavorites = () => {} }) {
   const [hoveredRating, setHoveredRating] = useState(0);
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState([]);
+
+  // Каждый раз при открытии страницы фильма
+  // начинаем с самого верха.
+  useEffect(() => {
+    window.scrollTo({
+      top: 300,
+      left: 0,
+      behavior: "auto",
+    });
+  }, [id]);
+
+  const handleBack = () => {
+    const previousPage = location.state?.from;
+    const returnMovieId = location.state?.returnMovieId;
+
+    if (previousPage) {
+      navigate(previousPage, {
+        state: {
+          restoreMovieId: returnMovieId,
+        },
+      });
+
+      return;
+    }
+
+    navigate("/");
+  };
 
   if (!movie) {
     return (
@@ -32,12 +60,13 @@ function MoviePage({ favorites = [], setFavorites = () => {} }) {
               Фильм не найден
             </h2>
 
-            <Link
-              to="/"
+            <button
+              type="button"
+              onClick={handleBack}
               className="text-sm text-gray-400 transition hover:text-white sm:text-base"
             >
               ← Вернуться к фильмам
-            </Link>
+            </button>
           </div>
         </section>
       </main>
@@ -110,7 +139,7 @@ function MoviePage({ favorites = [], setFavorites = () => {} }) {
 
         <MovieCarousel />
 
-        <div className="h-8 sm:h-16" />
+        <div className="h-2 sm:h-4" />
 
         <section className="mx-auto max-w-7xl px-3 pb-8 sm:px-6 sm:pb-16">
           <div className="mx-auto w-full overflow-hidden rounded-xl border border-gray-800 bg-[#181b21]/95 backdrop-blur-sm sm:w-[calc(100%-104px)] sm:rounded-2xl">
@@ -124,7 +153,7 @@ function MoviePage({ favorites = [], setFavorites = () => {} }) {
               <div className="min-w-0 flex-1 p-4 sm:p-6 lg:p-8">
                 <button
                   type="button"
-                  onClick={() => navigate(-1)}
+                  onClick={handleBack}
                   className="mb-5 flex items-center gap-2 text-sm text-gray-400 transition hover:text-white sm:mb-6"
                 >
                   <ArrowLeft size={17} />
@@ -322,6 +351,9 @@ function MoviePage({ favorites = [], setFavorites = () => {} }) {
                       <Link
                         key={recommendedMovie.id}
                         to={`/movie/${recommendedMovie.id}`}
+                        state={{
+                          from: location.pathname + location.search,
+                        }}
                         className="group min-w-0"
                       >
                         <div className="aspect-[2/3] w-full overflow-hidden rounded-xl bg-black">
@@ -368,7 +400,7 @@ function MoviePage({ favorites = [], setFavorites = () => {} }) {
                       <button
                         type="submit"
                         disabled={!commentText.trim()}
-                        className="flex items-center gap-2 rounded-lg bg-[#242831] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#2d323c] disabled:cursor-not-allowed disabled:opacity-40 sm:px-5"
+                        className="flex items-center gap-2 rounded-lg bg-[#242831] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#2d323c] hover:text-white disabled:cursor-not-allowed disabled:opacity-40 sm:px-5"
                       >
                         <Send size={16} />
                         Отправить

@@ -1,16 +1,25 @@
 import { Heart } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { useRating } from "../context/RatingContext";
 
 function MovieCard({ movie, favorites = [], setFavorites = () => {} }) {
   const [hoveredRating, setHoveredRating] = useState(0);
 
+  const location = useLocation();
+
   const { getMovieRating, setMovieRating } = useRating();
 
   const userRating = getMovieRating(movie.id);
 
   const isFavorite = favorites.some((item) => item.id === movie.id);
+
+  const from = location.pathname + location.search;
+
+  const movieLinkState = {
+    from,
+    returnMovieId: movie.id,
+  };
 
   const toggleFavorite = (event) => {
     event.preventDefault();
@@ -36,8 +45,15 @@ function MovieCard({ movie, favorites = [], setFavorites = () => {} }) {
 
   return (
     <>
-      <article className="group w-full overflow-hidden rounded-xl border border-gray-800 bg-[#181b21] transition duration-300 hover:border-gray-700 sm:hidden">
-        <Link to={`/movie/${movie.id}`} className="block">
+      <article
+        data-movie-id={movie.id}
+        className="group w-full overflow-hidden rounded-xl border border-gray-800 bg-[#181b21] transition duration-300 hover:border-gray-700 sm:hidden"
+      >
+        <Link
+          to={`/movie/${movie.id}`}
+          state={movieLinkState}
+          className="block"
+        >
           <div className="aspect-[2/3] w-full overflow-hidden bg-black">
             <img
               src={movie.poster}
@@ -48,7 +64,11 @@ function MovieCard({ movie, favorites = [], setFavorites = () => {} }) {
         </Link>
 
         <div className="flex items-end justify-between gap-2 px-3 py-2.5">
-          <Link to={`/movie/${movie.id}`} className="min-w-0 flex-1">
+          <Link
+            to={`/movie/${movie.id}`}
+            state={movieLinkState}
+            className="min-w-0 flex-1"
+          >
             <h3 className="line-clamp-2 text-sm font-bold leading-5 text-white">
               {movie.title}
             </h3>
@@ -77,10 +97,14 @@ function MovieCard({ movie, favorites = [], setFavorites = () => {} }) {
         </div>
       </article>
 
-      <article className="group hidden h-[290px] w-full overflow-hidden rounded-xl border border-gray-800 bg-[#181b21] transition duration-300 hover:-translate-y-1 hover:border-gray-700 sm:block">
+      <article
+        data-movie-id={movie.id}
+        className="group hidden h-[290px] w-full overflow-hidden rounded-xl border border-gray-800 bg-[#181b21] transition duration-300 hover:-translate-y-1 hover:border-gray-700 sm:block"
+      >
         <div className="flex h-full">
           <Link
             to={`/movie/${movie.id}`}
+            state={movieLinkState}
             className="h-full w-[145px] shrink-0 sm:w-[180px] lg:w-[200px]"
           >
             <div className="h-full w-full overflow-hidden bg-black">
@@ -92,7 +116,11 @@ function MovieCard({ movie, favorites = [], setFavorites = () => {} }) {
             </div>
           </Link>
 
-          <Link to={`/movie/${movie.id}`} className="min-w-0 flex-1">
+          <Link
+            to={`/movie/${movie.id}`}
+            state={movieLinkState}
+            className="min-w-0 flex-1"
+          >
             <div className="flex h-full min-w-0 flex-col px-4 py-4 sm:px-5 lg:px-6">
               <div className="flex items-start justify-between gap-4">
                 <h3 className="line-clamp-2 min-w-0 flex-1 text-xl font-bold leading-6 text-white transition group-hover:text-gray-300 sm:text-2xl sm:leading-7">
@@ -111,7 +139,6 @@ function MovieCard({ movie, favorites = [], setFavorites = () => {} }) {
                     <div className="flex items-center">
                       {[1, 2, 3, 4, 5].map((star) => {
                         const isActive = star <= displayedRating;
-
                         const isHovered = star === hoveredRating;
 
                         return (

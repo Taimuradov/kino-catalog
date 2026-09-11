@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 
 import movies from "../data/movies";
@@ -11,13 +11,18 @@ import Background from "../components/Background";
 function Home({ favorites, setFavorites, homeResetKey }) {
   const moviesPerPage = 10;
 
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
 
   const searchQuery = searchParams.get("search")?.trim().toLowerCase() || "";
 
-  // Автоматически сортируем фильмы от самой новой премьеры
-  // к самой старой. Исходный массив movies не изменяется.
+  const pageFromUrl = Number(searchParams.get("page")) || 1;
+
+  const previousSearchRef = useRef(searchQuery);
+  const previousHomeResetKeyRef = useRef(homeResetKey);
+
+  const catalogBlockRef = useRef(null);
+
   const sortedMovies = [...movies].sort((a, b) => {
     const dateA = new Date(a.premiere);
     const dateB = new Date(b.premiere);
@@ -50,9 +55,10 @@ function Home({ favorites, setFavorites, homeResetKey }) {
     );
   });
 
-  const [currentPage, setCurrentPage] = useState(1);
-
   const totalPages = Math.ceil(filteredMovies.length / moviesPerPage);
+
+  const currentPage =
+    totalPages > 0 ? Math.min(Math.max(pageFromUrl, 1), totalPages) : 1;
 
   const startIndex = (currentPage - 1) * moviesPerPage;
 
@@ -61,78 +67,125 @@ function Home({ favorites, setFavorites, homeResetKey }) {
     startIndex + moviesPerPage,
   );
 
-  const catalogBlockRef = useRef(null);
-
-  const shouldScrollToCatalogRef = useRef(false);
-
   useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery]);
+    const restoreMovieId = location.state?.restoreMovieId;
 
-  useEffect(() => {
-    setCurrentPage(1);
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  }, [homeResetKey]);
-
-  useEffect(() => {
-    if (totalPages > 0 && currentPage > totalPages) {
-      setCurrentPage(totalPages);
-    }
-  }, [currentPage, totalPages]);
-
-  useEffect(() => {
-    if (shouldScrollToCatalogRef.current) {
-      return;
-    }
-
-    window.scrollTo({
-      top: 0,
-      behavior: "auto",
-    });
-  }, [location.pathname]);
-
-  useEffect(() => {
-    if (!shouldScrollToCatalogRef.current) {
-      return;
-    }
-
-    shouldScrollToCatalogRef.current = false;
-
-    if (!catalogBlockRef.current) {
+    if (!restoreMovieId) {
       return;
     }
 
     requestAnimationFrame(() => {
-      const catalogTop =
-        catalogBlockRef.current.getBoundingClientRect().top + window.scrollY;
+      requestAnimationFrame(() => {
+        const movieCards = Array.from(
+          document.querySelectorAll(`[data-movie-id="${restoreMovieId}"]`),
+        );
 
-      const header = document.querySelector("header");
+        const visibleMovieCard = movieCards.find((card) => {
+          const rect = card.getBoundingClientRect();
 
-      const headerHeight = header ? header.getBoundingClientRect().height : 0;
+          return rect.width > 0 && rect.height > 0;
+        });
 
-      const gap = 8;
+        if (!visibleMovieCard) {
+          return;
+        }
 
-      const targetPosition = catalogTop - headerHeight - gap;
-
-      window.scrollTo({
-        top: Math.max(targetPosition, 0),
-        behavior: "smooth",
+        visibleMovieCard.scrollIntoView({
+          behavior: "auto",
+          block: "center",
+          inline: "nearest",
+        });
       });
     });
-  }, [currentPage]);
+  }, [location.state, currentPage]);
+
+  useEffect(() => {
+    if (previousSearchRef.current === searchQuery) {
+      return;
+    }
+
+    previousSearchRef.current = searchQuery;
+
+    const nextParams = new URLSearchParams(searchParams);
+
+    nextParams.set("page", "1");
+
+    setSearchParams(nextParams);
+  }, [searchQuery, searchParams, setSearchParams]);
+
+  useEffect(() => {
+    if (previousHomeResetKeyRef.current === homeResetKey) {
+      return;
+    }
+
+    previousHomeResetKeyRef.current = homeResetKey;
+
+    const nextParams = new URLSearchParams(searchParams);
+
+    nextParams.set("page", "1");
+
+    setSearchParams(nextParams);
+
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  }, [homeResetKey, searchParams, setSearchParams]);
+
+  useEffect(() => {
+    if (totalPages > 0 && pageFromUrl > totalPages) {
+      const nextParams = new URLSearchParams(searchParams);
+
+      nextParams.set("page", String(totalPages));
+
+      setSearchParams(nextParams, { replace: true });
+    }
+  }, [pageFromUrl, totalPages, searchParams, setSearchParams]);
+
+  const updatePage = (page) => {
+    if (page < 1 || page > totalPages || page === currentPage) {
+      return;
+    }
+
+    const nextParams = new URLSearchParams(searchParams);
+
+    nextParams.set("page", String(page));
+
+    setSearchParams(nextParams);
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (!catalogBlockRef.current) {
+          return;
+        }
+
+        const catalogTop =
+          catalogBlockRef.current.getBoundingClientRect().top + window.scrollY;
+
+        const header = document.querySelector("header");
+
+        const headerHeight = header ? header.getBoundingClientRect().height : 0;
+
+        const gap = 8;
+
+        const targetPosition = catalogTop - headerHeight - gap;
+
+        window.scrollTo({
+          top: Math.max(targetPosition, 0),
+          left: 0,
+          behavior: "smooth",
+        });
+      });
+    });
+  };
 
   const previousPage = () => {
     if (currentPage === 1) {
       return;
     }
 
-    shouldScrollToCatalogRef.current = true;
-
-    setCurrentPage((prev) => Math.max(prev - 1, 1));
+    updatePage(currentPage - 1);
   };
 
   const nextPage = () => {
@@ -140,23 +193,11 @@ function Home({ favorites, setFavorites, homeResetKey }) {
       return;
     }
 
-    shouldScrollToCatalogRef.current = true;
-
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+    updatePage(currentPage + 1);
   };
 
   const goToPage = (page) => {
-    if (page < 1 || page > totalPages) {
-      return;
-    }
-
-    if (page === currentPage) {
-      return;
-    }
-
-    shouldScrollToCatalogRef.current = true;
-
-    setCurrentPage(page);
+    updatePage(page);
   };
 
   return (
